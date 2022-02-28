@@ -65,11 +65,11 @@ private:
     ComMonitor monitor;
     ComRobot robot;
     int robotStarted = 0;
+    int com = 0;
     int move = MESSAGE_ROBOT_STOP;
     int start = MESSAGE_ROBOT_START_WITHOUT_WD;
-    int compteur = 0;
-    int WD = 0;
-    
+    int cpt = 0;
+    int WD = 0;    
     /**********************************************************************/
     /* Tasks                                                              */
     /**********************************************************************/
@@ -79,11 +79,10 @@ private:
     RT_TASK th_openComRobot;
     RT_TASK th_startRobot;
     RT_TASK th_move;
+    RT_TASK th_watchrobot ;
     RT_TASK th_checkBattery ;
     RT_TASK th_camera;
     RT_TASK th_pictures;
-    RT_TASK th_reset ;
-    RT_TASK th_closeMonitor;
     
     /**********************************************************************/
     /* Mutex                                                              */
@@ -92,9 +91,9 @@ private:
     RT_MUTEX mutex_robot;
     RT_MUTEX mutex_robotStarted;
     RT_MUTEX mutex_move;
-    RT_MUTEX mutex_camera;
     RT_MUTEX mutex_WD;
-    RT_MUTEX mutex_compteur;
+    RT_MUTEX mutex_comRobot;
+    RT_MUTEX mutex_camera;
 
 
     /**********************************************************************/
@@ -104,11 +103,9 @@ private:
     RT_SEM sem_openComRobot;
     RT_SEM sem_serverOk;
     RT_SEM sem_startRobot;
-    RT_SEM sem_watchDog ;
+    RT_SEM sem_WatchRobot;
     RT_SEM sem_camera;
     RT_SEM sem_pictures;
-    RT_SEM sem_closeMonitor;
-
     /**********************************************************************/
     /* Message queues                                                     */
     /**********************************************************************/
@@ -138,6 +135,7 @@ private:
      */
     void OpenComRobot(void *arg);
 
+    
     /**
      * @brief Thread starting the communication with the robot.
      */
@@ -151,29 +149,27 @@ private:
     /**
      * @bried Thread handling the battery of the robot
      */
-    void CheckBatteryTask(void *arg);
+    void CheckBatteryTask(void * arg);
     
     
     /**
-     * Camera Task
+     * @brief Thread handling control of the camera
      */
     void CameraTask(void *arg);
     
     /**
-     * Pictures Task
+     * @brief Thread handling the position of the robot
      */
     void PicturesTask(void *arg);
     
+    
     /**
-     * Reset Task
+     * @brief Task to watch the loss of communication with the robot
      */
-    void ResetTask(void *arg);
+    void WatchRobotTask(void * arg);
     
-    void CloseMonitorTask(void *arg);
     
-
-    
-    Message* Reset(Message * msgSend);
+   
     /**********************************************************************/
     /* Queue services                                                     */
     /**********************************************************************/
